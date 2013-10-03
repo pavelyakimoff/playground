@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Playground</title>
+  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+	<div class="container">
+		<div class="navbar">
+			<h1>Песочница</h1>
+			<div class="navbar-inner">
+				<ul class="nav">
+					<li><%= link_to "Разработчики", controller: "developers" %></li>
+				</ul>
+			</div>
+		</div>
+		<%= yield %>
+	</div>
+</body>
+</html>
