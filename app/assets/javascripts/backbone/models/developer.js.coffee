@@ -5,6 +5,12 @@ class Playground.Models.Developer extends Backbone.Model
     name: null
     surname: null
     phone: null
+
+  urlRoot: '/developers'
+
+  delete: ->
+  	this.destroy()
+  	console.log 'deleted in model'
    
 class Playground.Collections.DevelopersCollection extends Backbone.Collection
   model: Playground.Models.Developer

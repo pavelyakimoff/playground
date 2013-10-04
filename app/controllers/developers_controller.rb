@@ -9,6 +9,11 @@ class DevelopersController < ApplicationController
 		render :json => @developers
 	end
 
+	def destroy
+		developer = Developer.find_by(params[:id])
+		developer.destroy
+	end
+
 	def new
 		
 	end

@@ -13,5 +13,5 @@ class Playground.Views.DeveloperListView extends Backbone.View
 
 	renderDeveloper: (developer) ->
 		console.log 'Рендеринг вьюхи разработчика ' + developer.get('name')
-		developerView = new Playground.Views.DeveloperView({model: developer})
-		$('#developerList').append(developerView.render())
+		developer.developerView = new Playground.Views.DeveloperView({model: developer})
+		$('#developerList').append(developer.developerView.render())

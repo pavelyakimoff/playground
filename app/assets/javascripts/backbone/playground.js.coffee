@@ -12,8 +12,7 @@ window.Playground =
   initialize: -> alert 'Hello from Backbone!'
 
 $ ->	
-	#App = new Backbone.Marionette.Application()
-	#App.addRegions({mainRegion: "#content"})
+	App = new Backbone.Marionette.Application()
 	developerList = new Playground.Views.DeveloperListView()
 
 
