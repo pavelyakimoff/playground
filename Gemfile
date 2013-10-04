@@ -31,8 +31,14 @@ group :doc do
   gem 'sdoc', require: false
 end
 
+group :assets do
+  # Your other asset gems (sass-rails, coffee-rails, etc)
+  
+end
 
-gem 'sass-rails' # if running rails 3.1 or greater
+gem 'marionette-rails'
+
+gem 'sass-rails'
 gem "bootstrap-sass"
 gem "rails-backbone"
 

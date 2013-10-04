@@ -5,6 +5,7 @@ class DevelopersController < ApplicationController
 
 	def json
 		@developers = Developer.all
+		response.headers['Cache-Control'] = 'no-cache'
 		render :json => @developers
 	end
 
