@@ -1,7 +1,7 @@
 class Playground.Views.DeveloperView extends Backbone.View 
 	tagName: 'div'
 	className: 'developerCart'
-	template: _.template('<p><%= name %></p>')
+	template: '<p><%= name %></p>'
 	render: ->
-		attributes = this.model.toJSON()
-		this.$el.html(this.template(attributes))
+		tmpl = _.template(this.template)
+		this.$el.html(tmpl(this.model.toJSON()))

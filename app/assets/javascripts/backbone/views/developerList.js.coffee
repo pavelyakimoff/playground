@@ -3,15 +3,15 @@ class Playground.Views.DeveloperListView extends Backbone.View
 	
 	initialize: ->
 		this.collection = new Playground.Collections.DevelopersCollection()
-		this.render()
-	
-	render: ->
-		that = this
-		_.each(this.collection.models, this.rend(item), this)
+		this.collection.fetch().done =>
+			console.log 'Приложение запущено! Получена коллекция - кол-во объектов в коллекции ' + this.collection.length
+			this.render()
+			
+	render: ->		
+		this.collection.models.forEach (developer) =>
+			this.renderDeveloper(developer)
 
-	rend: (item) ->  
-		that.renderContact(item)
-
-	renderContact: (item) ->
-		contactView = new Playground.Views.DeveloperView({model: item})
-		this.$el.append(contactView.render().el)
+	renderDeveloper: (developer) ->
+		console.log 'Рендеринг вьюхи разработчика ' + developer.get('name')
+		developerView = new Playground.Views.DeveloperView({model: developer})
+		$('#developerList').append(developerView.render())
