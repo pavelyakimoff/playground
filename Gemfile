@@ -34,7 +34,7 @@ end
 
 gem 'sass-rails' # if running rails 3.1 or greater
 gem "bootstrap-sass"
-gem "rails-backbone", "~> 0.9.10"
+gem "rails-backbone"
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
