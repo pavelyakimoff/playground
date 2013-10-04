@@ -1,19 +1,9 @@
 <p><%= link_to 'Добавить разработчика', new_developer_path, :class => 'btn btn-primary' %></p>
 
-<div id="developerList"></div>
-
-<table class="table">
+<table id="developerList" class="table">
   <tr>
     <th>Имя</th>
     <th>Фамилия</th>
     <th>Телефон</th>
   </tr>
- 
-  <% @developers.each do |developer| %>
-    <tr>
-      <td><%= developer.name %></td>
-      <td><%= developer.surname %></td>
-      <td><%= developer.phone %></td>
-    </tr>
-  <% end %>
 </table>

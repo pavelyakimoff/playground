@@ -12,13 +12,10 @@ window.Playground =
   initialize: -> alert 'Hello from Backbone!'
 
 $ ->	
-	
-	window.developerList = new Playground.Views.DeveloperListView()
+	#App = new Backbone.Marionette.Application()
+	#App.addRegions({mainRegion: "#content"})
+	developerList = new Playground.Views.DeveloperListView()
 
-	###developers = new Playground.Collections.DevelopersCollection()
-	developers.fetch().done ->
-		developers.forEach (developer) ->
-			console.log developer.get('name')###
 
 	
 	
