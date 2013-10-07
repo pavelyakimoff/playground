@@ -13,6 +13,9 @@
 //= require jquery
 //= require jquery_ujs
 
+//#= require dust
+//#= require hamlcoffee
+
 //= require bootstrap
 //= require underscore
 //= require backbone	

@@ -1,11 +1,7 @@
 class Playground.Views.DeveloperView extends Backbone.Marionette.ItemView
   tagName: 'tr'
   className: 'developerInfo'
-  template: "
-    <td><%= name %></td>
-    <td><%= surname %></td>
-    <td><%= phone %></td>
-    <td><a href='#' class='delete btn btn-danger'>удалить</a></td>"
+  template: "backbone/templates/developerView"
   
   initialize:  ->
     this.$el.delegate('.delete','click', @deleteDeveloper)
@@ -15,8 +11,13 @@ class Playground.Views.DeveloperView extends Backbone.Marionette.ItemView
     this.model.delete()
     this.$el.fadeOut(3000, (item) => this.remove() )
 
-  render: ->
-    tmpl = _.template(this.template)
-    this.$el.html(tmpl(this.model.toJSON()))
-    
+  onBeforeRender: ->
+    console.log this
 
+  serializeData: ->
+    console.log @model.toJSON()
+    @model.toJSON()
+
+  ###render: ->
+    tmpl = _.template(this.template)
+    this.$el.html(tmpl(this.model.toJSON()))###

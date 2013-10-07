@@ -1,0 +1,5 @@
+%td= @name
+%td= @surname
+%td= @phone
+%td
+	%a.delete.btn.btn-danger{:href=>"#"} удалить

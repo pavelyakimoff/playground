@@ -12,17 +12,18 @@ window.Playground =
   initialize: -> alert 'Hello from Backbone!'
 
 $ ->    
+
+    Backbone.Marionette.Renderer.render = (template, data) ->
+      throw "Template ['" + template + "'] not found!"  unless JST[template]
+      console.log '123'
+      JST[template] data
+
     App = new Backbone.Marionette.Application()
 
     App.addRegions
         mainRegion: '#developers'
 
     App.addInitializer ->
-        ###developers = new Playground.Collections.DeveloperCollection([
-            { name: 'Pavel', surname: 'Yakimoff', phone: '45454' },
-            { name: 'Pavel', surname: 'Yakimoff', phone: '45454' },
-            { name: 'Pavel', surname: 'Yakimoff', phone: '45454' }
-        ])###
         developers = new Playground.Collections.DeveloperCollection()
         developers.fetch().done ->
             developersView = new Playground.Views.DevelopersView {collection: developers}

@@ -1,0 +1,7 @@
+%thead
+	%tr.header
+		%th Имя
+		%th Фамилия
+		%th Телефон
+		%th
+%tbody

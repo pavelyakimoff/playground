@@ -1,7 +1,7 @@
 class Playground.Views.DevelopersView extends Backbone.Marionette.CompositeView
   tagName: "table"
   className: 'table'
-  template: "#developers_template"
+  template: "backbone/templates/developersView"
   itemView: Playground.Views.DeveloperView
   itemViewContainer1: -> 
     console.log ".test"
