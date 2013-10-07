@@ -1,17 +1,13 @@
-class Playground.Views.DeveloperListView extends Backbone.View
-	el: $('#developerList')
-	
-	initialize: ->
-		this.collection = new Playground.Collections.DevelopersCollection()
-		this.collection.fetch().done =>
-			console.log 'Приложение запущено! Получена коллекция - кол-во объектов в коллекции ' + this.collection.length
-			this.render()
-			
-	render: ->		
-		this.collection.models.forEach (developer) =>
-			this.renderDeveloper(developer)
+class Playground.Views.DevelopersView extends Backbone.Marionette.CompositeView
+  tagName: "table"
+  className: 'table'
+  template: "#developers_template"
+  itemView: Playground.Views.DeveloperView
+  itemViewContainer1: -> 
+    console.log ".test"
 
-	renderDeveloper: (developer) ->
-		console.log 'Рендеринг вьюхи разработчика ' + developer.get('name')
-		developer.developerView = new Playground.Views.DeveloperView({model: developer})
-		$('#developerList').append(developer.developerView.render())
+  appendHtml: (collectionView, itemView) ->
+    collectionView.$("tbody").append(itemView.el)
+
+  onRender: ->
+    console.log "render"

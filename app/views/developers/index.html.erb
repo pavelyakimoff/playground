@@ -1,10 +1,17 @@
 <p><%= link_to 'Добавить разработчика', new_developer_path, :class => 'btn btn-primary' %></p>
 
-<table id="developerList" class="table">
-  <tr>
-    <th>Имя</th>
-    <th>Фамилия</th>
-    <th>Телефон</th>
-    <th></th>
-  </tr>
-</table>
+<div id="developers">
+</div>
+
+<script type="text/template" id="developers_template">	
+	<thead>	          	  
+		<tr class='header'>
+			<th>Имя</th>
+			<th>Фамилия</th>
+			<th>Телефон</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+	</tbody>
+</script>

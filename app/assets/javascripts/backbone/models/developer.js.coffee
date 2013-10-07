@@ -1,7 +1,7 @@
 class Playground.Models.Developer extends Backbone.Model
   paramRoot: 'developer'
 
-  defaults:	
+  defaults: 
     name: null
     surname: null
     phone: null
@@ -9,9 +9,9 @@ class Playground.Models.Developer extends Backbone.Model
   urlRoot: '/developers'
 
   delete: ->
-  	this.destroy()
-  	console.log 'deleted in model'
+    this.destroy()
+    console.log 'deleted in model'
    
-class Playground.Collections.DevelopersCollection extends Backbone.Collection
+class Playground.Collections.DeveloperCollection extends Backbone.Collection
   model: Playground.Models.Developer
   url: '/developers/json'
