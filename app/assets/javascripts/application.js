@@ -9,7 +9,7 @@
 //
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
-// // require turbolinks
+// require turbolinks
 //= require jquery
 //= require jquery_ujs
 
@@ -18,7 +18,6 @@
 
 //= require bootstrap
 //= require underscore
-//= require backbone	
+//= require backbone 
 //= require backbone.marionette
-//= require backbone/playground	
-//= require_tree .
+//= require playground	
