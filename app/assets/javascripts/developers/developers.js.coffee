@@ -12,16 +12,11 @@ $ ->
     mainRegion: '#developers'
 
   App.addInitializer ->
-    developers = new Playground.Collections.DevelopersCollection()
-    $.getJSON '/developers/json', (json) ->
-      $.each json, (key, model) ->
-        console.log model
+    developers = new Playground.Collections.Developers()
+    developers.fetch().done ->
+      developersView = new Playground.Views.Developers
+        collection: developers
       
-        developers.add model
-    # developers.fetch().done ->
-    #   developersView = new Playground.Views.DevelopersView
-    #     collection: developers
-      
-    #   App.mainRegion.show(developersView)
+      App.mainRegion.show(developersView)
 
   App.start()

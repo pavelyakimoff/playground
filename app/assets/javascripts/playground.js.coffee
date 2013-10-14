@@ -8,4 +8,4 @@ window.Playground =
   initialize: -> 
     #alert 'Hello from Backbone!'
 
-$($.proxy(Playground.initialize, Playground));
+$($.proxy(Playground.initialize, Playground))

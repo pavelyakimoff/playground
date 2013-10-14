@@ -9,7 +9,6 @@ class Playground.Models.Developer extends Backbone.Model
   urlRoot: '/developers'
   
   initialize: ->
-    console.log this
     
   delete: ->
     this.destroy()
