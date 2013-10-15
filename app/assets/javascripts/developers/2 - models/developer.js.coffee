@@ -12,4 +12,6 @@ class Playground.Models.Developer extends Backbone.Model
     
   delete: ->
     this.destroy()
+    
+  
 

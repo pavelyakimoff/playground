@@ -6,17 +6,17 @@ $ ->
     throw "Template ['" + template + "'] not found!"  unless JST[template]
     JST[template] data
 
-  App = new Backbone.Marionette.Application()
+  Playground.App = new Backbone.Marionette.Application()
 
-  App.addRegions
+  Playground.App.addRegions
     mainRegion: '#developers'
 
-  App.addInitializer ->
-    developers = new Playground.Collections.Developers()
-    developers.fetch().done ->
-      developersView = new Playground.Views.Developers
-        collection: developers
+  Playground.App.addInitializer ->
+    Playground.App.collection = new Playground.Collections.Developers()
+    Playground.App.collection.fetch().done ->
+      developersListHtml = new Playground.Views.Developers
+        collection: Playground.App.collection
       
-      App.mainRegion.show(developersView)
+      Playground.App.mainRegion.show(developersListHtml)
 
-  App.start()
+  Playground.App.start()

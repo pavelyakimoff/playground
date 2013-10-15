@@ -1,7 +1,9 @@
-%thead
-	%tr.header
-		%th Имя
-		%th Фамилия
-		%th Телефон
-		%th
-%tbody
+%p.add.btn.btn-primary{:href => '#editForm', :role => "button", :data-toggle => "modal"} Добавить разработчика
+  %table.table
+    %thead
+      %tr.header
+        %th Имя
+        %th Фамилия
+        %th Телефон
+        %th
+    %tbody

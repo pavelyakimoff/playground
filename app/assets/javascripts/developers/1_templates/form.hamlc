@@ -1,0 +1,13 @@
+#editForm.modal.hide.fade{:data-backdrop=>'false'}
+  .modal-header
+    %button.close{:type => "button", :data-dismiss => "modal", :aria-hidden => "true"} &times;
+    %h3 Карточка разработчика
+  .modal-body
+    %label{:for => "name"} Имя
+    %input{:name => "name", :type => "text", :data-value => "developer.name"}
+    %label{:for => "surname"} Фамилия
+    %input{:name => "surname", :type => "text", :data-value => "developer.surname"}
+    %label{:for => "phone"} Телефон
+    %input{:name => "phone", :type => "text", :data-value => "developer.phone"}
+  .modal-footer
+    %a.btn.btn-primary.save{:href => "#"} Сохранить

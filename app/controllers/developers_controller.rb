@@ -1,35 +1,40 @@
 class DevelopersController < ApplicationController
-	def index
-		@developers = Developer.all
-	end
+  def index
+    @developers = Developer.all
+  end
 
-	def json
-		@developers = Developer.all
-		response.headers['Cache-Control'] = 'no-cache'
-		render :json => @developers
-	end
+  def json
+    @developers = Developer.all
+    response.headers['Cache-Control'] = 'no-cache'
+    render :json => @developers
+  end
 
-	def destroy
-		developer = Developer.find_by(params[:id])
-		developer.destroy
-	end
+  def update
+    developer = Developer.find(params[:id])
+    developer.update(name: params[:name],surname: params[:surname], phone: params[:phone])
+  end
 
-	def new
-		
-	end
+  def destroy
+    developer = Developer.find(params[:id])
+    developer.destroy
+  end
 
-	def create
-		@developer = Developer.new(post_params)
-		@developer.save
-		redirect_to @developer
-	end
+  def new
+    
+  end
 
-	def show
-		@developer = Developer.find(params[:id])
-	end
+  def create
+    @developer = Developer.new(post_params)
+    @developer.save
+    redirect_to @developer
+  end
 
-	private
-		def post_params
-			params.require(:developer).permit(:name, :surname, :phone)
-		end
+  def show
+    @developer = Developer.find(params[:id])
+  end
+
+  private
+    def post_params
+      params.require(:developer).permit(:name, :surname, :phone)
+    end
 end
