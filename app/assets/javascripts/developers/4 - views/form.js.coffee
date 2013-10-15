@@ -7,6 +7,9 @@ class Playground.Views.DeveloperForm extends Backbone.Marionette.ItemView
     'click .close': 'closePopup'
   
   initialize: ->
+    Backbone.Validation.bind(this, this.model)
+    console.log 'initialize form'
+    console.log this
   
   onRender: ->    
     # rivets-binding
@@ -20,12 +23,18 @@ class Playground.Views.DeveloperForm extends Backbone.Marionette.ItemView
     
   saveModel: (ev) ->
     ev.preventDefault()
-    console.log 'saveModel'
-    modal = this.$el.find('#editForm')
-    modal.on('hidden', @closePopup())
-    Playground.App.collection.add(this.model) if this.model.isNew()
-    this.model.save()
-    modal.modal('hide')
+    
+    console.log this.model.validate()
+    
+    if this.model.isValid()
+      console.log 'saveModel'
+      modal = this.$el.find('#editForm')
+      modal.on('hidden', @closePopup())
+      Playground.App.collection.add(this.model) if this.model.isNew()
+      this.model.save()
+      modal.modal('hide')
+    else
+      console.log 'validation errors!'
     
   closePopup: ->
     console.log 'closePopup'

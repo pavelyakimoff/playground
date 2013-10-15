@@ -6,6 +6,14 @@ class Playground.Models.Developer extends Backbone.Model
     surname: null
     phone: null
     
+  validation: 
+    name: 
+      required: true
+    surname:
+      required: true
+    phone:
+      required: true
+    
   urlRoot: '/developers'
   
   initialize: ->

@@ -21,6 +21,8 @@
 //= require backbone 
 //= require backbone.marionette
 
+//= require vendors/backbone.validation
+
 //= require rivets
 
 //= require playground	
