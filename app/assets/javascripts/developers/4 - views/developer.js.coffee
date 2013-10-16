@@ -8,7 +8,7 @@ class Playground.Views.Developer extends Backbone.Marionette.ItemView
     'click .edit':   'editDeveloper'
   
   initialize: ->
-    this.listenTo(this.model, 'change', this.render)
+    this.listenTo(this.model, 'request', this.render)
     
   # event-functions
   deleteDeveloper: ->
