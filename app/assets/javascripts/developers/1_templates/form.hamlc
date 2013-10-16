@@ -3,11 +3,17 @@
     %button.close{:type => "button", :data-dismiss => "modal", :aria-hidden => "true"} &times;
     %h3 Карточка разработчика
   .modal-body
-    %label{:for => "name"} Имя
-    %input{:name => "name", :type => "text", :data-value => "developer.name"}
-    %label{:for => "surname"} Фамилия
-    %input{:name => "surname", :type => "text", :data-value => "developer.surname"}
-    %label{:for => "phone"} Телефон
-    %input{:name => "phone", :type => "text", :data-value => "developer.phone"}
+    .control-group
+      %label.control-label{:for => "name"} Имя
+      .controls
+        %input{:name => "name", :type => "text", :data-value => "developer.name"}
+    .control-group
+      %label.control-label{:for => "surname"} Фамилия
+      .controls
+        %input{:name => "surname", :type => "text", :data-value => "developer.surname"}
+    .control-group
+      %label.control-label{:for => "phone"} Телефон
+      .controls
+        %input{:name => "phone", :type => "text", :data-value => "developer.phone"}
   .modal-footer
     %a.btn.btn-primary.save{:href => "#"} Сохранить

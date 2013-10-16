@@ -13,6 +13,12 @@ class Playground.Models.Developer extends Backbone.Model
       required: true
     phone:
       required: true
+      pattern: 'digits'
+      
+  labels:
+    name: 'Имя'
+    surname: 'Фамилия'
+    phone: 'Телефон'
     
   urlRoot: '/developers'
   
@@ -20,6 +26,3 @@ class Playground.Models.Developer extends Backbone.Model
     
   delete: ->
     this.destroy()
-    
-  
-

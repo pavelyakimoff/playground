@@ -13,5 +13,16 @@
  */
 @import "bootstrap"
 
+$errorColor: #b94a48
+
 .developerInfo .btn
   margin-right: 10px
+
+.controls.error 
+  
+  input
+    border-color: $errorColor
+    box-shadow: 0px $errorColor
+  
+  .help-block
+    color: $errorColor
