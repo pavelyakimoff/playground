@@ -8,7 +8,11 @@ class Playground.Views.Developers extends Backbone.Marionette.CompositeView
     'click .add': 'addNewDeveloper'
 
   appendHtml: (collectionView, itemView) ->
-    collectionView.$("tbody").prepend(itemView.el).hide().fadeIn(500)
+    if itemView.model.isNew() 
+      console.log 'add new item to collection'
+      collectionView.$("tbody").prepend(itemView.el).find('tr:first').hide().fadeIn(500)
+    else
+      collectionView.$("tbody").prepend(itemView.el)
     
   addNewDeveloper: ->
     console.log 'addNewDeveloper'

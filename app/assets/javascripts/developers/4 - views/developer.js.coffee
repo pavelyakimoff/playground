@@ -14,11 +14,12 @@ class Playground.Views.Developer extends Backbone.Marionette.ItemView
   deleteDeveloper: ->
     console.log 'deleteDeveloper'
     this.$el.find('td').fadeOut 500, (item) => 
-      this.remove()
-      this.model.delete()
+      this.close()
+      this.model.destroy()
       
   editDeveloper: ->
     console.log 'editDeveloper'
+    console.log @
     @model.view = new Playground.Views.DeveloperForm
       model: this.model
     

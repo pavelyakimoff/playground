@@ -4,38 +4,43 @@ class Playground.Views.DeveloperForm extends Backbone.Marionette.ItemView
   
   events:
     'click .save': 'saveModel'
-    'click .close': 'closePopup'
+    'click .close': 'clickClose'
   
   initialize: ->
     Backbone.Validation.bind(this, this.model)
     console.log 'initialize form'
-    console.log this
   
   onRender: ->    
     # rivets-binding
-    @rivets = rivets.bind(@el,
-      developer: @model
-    )
+    window.test = rivets.bind @el, {developer: @model}
+    console.log window.test.bindings
     
+  clickClose: ->
+    console.log 'clickClose'
+    console.log 'DeveloperForm closed'
+    @close()
+  
   onClose: ->
     console.log 'onClose'
-    @rivets.unbind()
+    window.test.unbind()
+    console.log window.test.bindings
     
   saveModel: (ev) ->
     ev.preventDefault()
-    
-    console.log this.model.validate()
-    
-    if this.model.isValid()
-      console.log 'saveModel'
-      modal = this.$el.find('#editForm')
-      modal.on('hidden', @closePopup())
-      Playground.App.collection.add(this.model) if this.model.isNew()
+    console.log 'saveModel'
+    console.log 'validate model...'
+    if this.model.isValid(true) 
+      console.log 'model is valid!'
       this.model.save()
-      modal.modal('hide')
+      Playground.App.collection.add(this.model) if this.model.isNew()
+      @closePopup()
     else
       console.log 'validation errors!'
     
   closePopup: ->
     console.log 'closePopup'
-    @close()
+    modal = this.$el.find('#editForm')
+    modal.on 'hidden', => 
+      console.log 'DeveloperForm closed'
+      @close()
+    modal.modal('toggle')
