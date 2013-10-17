@@ -4,6 +4,9 @@ class Playground.Views.Developers extends Backbone.Marionette.CompositeView
   template: 'developers/1_templates/developers'
   itemView: Playground.Views.Developer
   
+  collectionEvents:
+    'sort': 'renderCollection'
+  
   events:
     'click .add': 'addNewDeveloper'
 
@@ -21,4 +24,6 @@ class Playground.Views.Developers extends Backbone.Marionette.CompositeView
       model: model
     $('#forms').html(form.render().el)
     
+  renderCollection: ->
+    this.render()
 

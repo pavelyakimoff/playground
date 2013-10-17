@@ -28,12 +28,15 @@ class Playground.Views.DeveloperForm extends Backbone.Marionette.ItemView
   saveModel: (ev) ->
     ev.preventDefault()
     console.log 'saveModel'
+    console.log @model
+    console.log @model.isNew()
     console.log 'validate model...'
     if this.model.isValid(true) 
       console.log 'model is valid!'
-      this.model.save()
-      Playground.App.collection.add(this.model) if this.model.isNew()
-      @closePopup()
+      console.log @model.isNew()
+      @model.save({wait: true}).done =>
+        Playground.App.collection.fetch() 
+        @closePopup()
     else
       console.log 'validation errors!'
     

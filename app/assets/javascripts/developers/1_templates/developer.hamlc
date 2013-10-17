@@ -1,6 +1,12 @@
 %td= @name
 %td= @surname
 %td= @phone
-%td
-	%a.delete.btn.btn-danger{:href=>"#"} Удалить
+%td.level
+  %button.btn.down 
+    %i.icon-chevron-down
+  %span.badge.badge-success= @level
+  %button.btn.up
+    %i.icon-chevron-up
+%td.actions
+  %a.delete.btn.btn-danger{:href=>"#"} Удалить
   %a.btn.edit{:href => "#editForm", :role => "button", :data-toggle => "modal"} Редактировать

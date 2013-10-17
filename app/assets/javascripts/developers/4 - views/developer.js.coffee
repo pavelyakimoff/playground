@@ -6,9 +6,11 @@ class Playground.Views.Developer extends Backbone.Marionette.ItemView
   events: 
     'click .delete': 'sure'
     'click .edit':   'editDeveloper'
+    'click .level .down': 'levelDown'
+    'click .level .up': 'levelUp'
   
   initialize: ->
-    this.listenTo(this.model, 'request', this.render)
+    this.listenTo @model, 'sync', this.render
     
   # event-functions
   deleteDeveloper: ->
@@ -32,4 +34,18 @@ class Playground.Views.Developer extends Backbone.Marionette.ItemView
     ev.preventDefault()
     console.log 'sure'
     @deleteDeveloper() if confirm('Точно удалить?')
-      
+    
+  levelDown: ->
+    level = @model.get('level')
+    console.log 'levelDown'
+    unless level == 0
+      console.log 'level was ' + level + ' now is ' + --level
+      @model.save({level: level}, {wait: true}).done =>
+        @model.collection.sort()
+    
+  levelUp: ->
+    level = @model.get('level')
+    console.log 'levelUp'
+    console.log 'level was ' + level + ' now is ' + ++level
+    @model.save({level: level}, {wait: true}).done =>
+      @model.collection.sort()

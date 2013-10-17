@@ -15,5 +15,9 @@
       %label.control-label{:for => "phone"} Телефон
       .controls
         %input{:name => "phone", :type => "text", :data-value => "developer.phone"}
+    .control-group
+      %label.control-label{:for => "level"} Level
+      .controls
+        %input{:name => "level", :type => "text", :data-value => "developer.level"}
   .modal-footer
     %a.btn.btn-primary.save{:href => "#"} Сохранить

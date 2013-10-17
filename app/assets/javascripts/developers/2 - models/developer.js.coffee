@@ -1,10 +1,9 @@
-class Playground.Models.Developer extends Backbone.Model
-  paramRoot: 'developer'
-  
+class Playground.Models.Developer extends Backbone.Model 
   defaults: 
     name: null
     surname: null
     phone: null
+    level: 0
     
   validation: 
     name: 
@@ -12,6 +11,9 @@ class Playground.Models.Developer extends Backbone.Model
     surname:
       required: true
     phone:
+      required: true
+      pattern: 'digits'
+    level:
       required: true
       pattern: 'digits'
       

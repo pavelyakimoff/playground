@@ -11,7 +11,8 @@ class DevelopersController < ApplicationController
 
   def update
     developer = Developer.find(params[:id])
-    developer.update(name: params[:name],surname: params[:surname], phone: params[:phone])
+    developer.update(name: params[:name],surname: params[:surname], phone: params[:phone], level: params[:level])
+    render :json => developer
   end
 
   def destroy
@@ -24,9 +25,9 @@ class DevelopersController < ApplicationController
   end
 
   def create
-    @developer = Developer.new(post_params)
-    @developer.save
-    redirect_to @developer
+    developer = Developer.new(post_params)
+    developer.save
+    render :json => developer
   end
 
   def show
@@ -35,6 +36,6 @@ class DevelopersController < ApplicationController
 
   private
     def post_params
-      params.require(:developer).permit(:name, :surname, :phone)
+      params.require(:developer).permit(:name, :surname, :phone, :level)
     end
 end
