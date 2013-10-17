@@ -1,5 +1,4 @@
 class Playground.Views.Developers extends Backbone.Marionette.CompositeView
-  tagName: 'div'
   className: 'developers'
   template: 'developers/1_templates/developers'
   itemView: Playground.Views.Developer

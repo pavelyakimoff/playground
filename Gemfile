@@ -42,8 +42,8 @@ gem 'sass-rails'
 gem "bootstrap-sass"
 gem "rails-backbone"
 
-gem 'haml_assets'
-gem 'dust_assets'
+#gem 'haml_assets'
+#gem 'dust_assets'
 gem 'haml_coffee_assets'
 gem 'execjs'
 
