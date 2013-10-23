@@ -14,7 +14,7 @@ $ ->
   Playground.App.addInitializer ->
     Playground.App.collection = new Playground.Collections.Developers()
     Playground.App.collection.fetch().done ->
-      developersListHtml = new Playground.Views.Developers
+      window.developersListHtml = new Playground.Views.Developers
         collection: Playground.App.collection
       
       Playground.App.mainRegion.show(developersListHtml)
