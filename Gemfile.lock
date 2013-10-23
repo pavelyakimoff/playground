@@ -37,6 +37,10 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.6.3)
+    dust_assets (0.0.5)
+      execjs (>= 1.2.9)
+      sprockets (>= 2.0.3)
+      tilt
     ejs (1.1.1)
     erubis (2.7.0)
     execjs (2.0.2)
@@ -133,6 +137,7 @@ PLATFORMS
 DEPENDENCIES
   bootstrap-sass
   coffee-rails (~> 4.0.0)
+  dust_assets
   execjs
   haml_coffee_assets
   jbuilder (~> 1.2)
