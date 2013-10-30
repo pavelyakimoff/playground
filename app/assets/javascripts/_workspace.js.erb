@@ -1,0 +1,404 @@
+window.Workspace = {
+
+  fayeClient: null,
+  fayeServer: '<%= FayeUtils::Client.url %>',
+
+  Models:       {},
+  Collections:  {},
+  Views:        {},
+  Router:       null,
+
+  initialize: function() {
+
+    this.initBackboneValidation();
+    this.initFayeClient();
+
+    this.rebuildNavigation();
+    $(window).resize($.proxy(function(){
+      this.rebuildNavigation();
+    },this));
+
+    $("a[title!=''][rel='tooltip']").tooltip({
+      placement: 'bottom',
+      animation: false
+    });
+
+  },
+
+  version_by_name: function(versions, name) {
+    return(_.find(versions, function(item){ return(item.version == name) }));
+  },
+
+  initBackboneValidation: function() {
+    if ( 'Validation' in Backbone ) {
+      Backbone.Validation.configure({
+        labelFormatter: 'label'
+      });
+
+      _.extend(Backbone.Validation.messages, {
+        required: 'Поле {0} обязательно для заполнения',
+        acceptance: 'Чекбокс {0} должен быть выбран',
+        min: 'Поле {0} должно быть больше или равно {1}',
+        max: 'Поле {0} должно быть меньше или равно to {1}',
+        range: 'Поле {0} должно быть {1} и {2}',
+        length: 'Размер поля {0} — {1} символов',
+        minLength: 'Поле {0} должно быть не меньше {1} символов',
+        maxLength: 'Поле {0} должно быть не больше {1} символов',
+        rangeLength: 'Поле {0} должно быть между {1} и {2} символами',
+        oneOf: 'Поле {0} должно содержать одно из: {1}',
+        equalTo: 'Поле {0} должно быть равно {1}',
+        pattern: 'Поле {0} должно соответствовать шаблону {1}'
+      });
+
+      // Вывод валидационных сообщений
+      _.extend(Backbone.Validation.callbacks, {
+        valid: function(view, attr) {
+
+          var control = view.$('[name='+attr+']:first').closest('.controls');
+          var incorrectFields = control.find('.help-block[data-for="'+attr+'"]').remove().end().find('.help-block');
+          if(incorrectFields.length == 0) control.removeClass('error');
+
+          //если внутри формы находятся другие формы, у них убираем предупреждения
+          //view.$('form').find('.controls, .control-group').closest('.control-group').andSelf().removeClass('error').find('.help-block').remove();
+
+        },
+
+        invalid: function(view, attr, error) {
+
+          var control = view.$('[name='+attr+']:first').closest('.controls');
+          control.addClass('error').find('.help-block[data-for="'+attr+'"]').remove().end().append('<div class="help-block" data-for="'+attr+'">'+error+'</div>');
+
+          //если внутри формы находятся другие формы, у них убираем предупреждения
+          //TODO: не очень хороший способ. Вообще нужно продумать способ не подсвечивать одноименные поля связанных моделей
+          //view.$('form').find('.controls, .control-group').closest('.control-group').andSelf().removeClass('error').find('.help-block').remove();
+
+        }
+      });
+    }
+
+  },
+
+  setTitle: function(title) {
+    $('title:first').text(title);
+  },
+
+  // Инстанцируем Faye клиент
+  initFayeClient: function() {
+
+    if ('Faye' in window) {
+      this.fayeClient = new Faye.Client(this.fayeServer, {
+        timeout: 60,
+        retry: 5
+      });
+
+      // Добавляем заголовок X-Client-ID с идентификатором клиента
+      Workspace.fayeClient.callback(function(){
+        if ( 'CONNECTED' == this.getState() ) {
+          $.ajaxSetup({
+            headers: { 'X-Client-ID': this._clientId }
+          });
+
+          Workspace.init_async_cloud()
+
+        }
+      }, Workspace.fayeClient);
+
+      this.fayeClient.addExtension({
+        outgoing: function(message, callback) {
+
+          var cookie = $.cookie('_<%= Environment.to_sym %>_ed_session_id');
+          message.ext = cookie;
+          callback(message);
+        }
+      });
+
+    }
+  },
+
+  add_topic_to_queue: function(id, title, cloud_unit_id) {
+    if (!this.queue ) this.queue = {};
+    this.queue[cloud_unit_id] = { id: id, title: title }
+  },
+
+  init_async_cloud: function() {
+    if ( !this.queue ) { this.queue = {}; }
+    
+    this.fayeClient.subscribe('/cloud', $.proxy(function(message){
+      cloud_unit_id = JSON.parse(message).id
+      console.info(message)
+      
+      if ( Workspace.queue[cloud_unit_id] ) {
+        this.growlMessage({
+          status: 'ok',
+          timeout: 10000,
+          title: Workspace.queue[cloud_unit_id]['title'],
+          text: 'Картинки обработаны. Сохраните изменения или перезагрузите страницу, чтобы увидеть обработанные картинки.'
+        })
+        delete(Workspace.queue[cloud_unit_id]);
+      }
+
+    }, this));
+  },
+
+  // Парсит сообщения об ошибках, возвращаемые сервером и добавляет их к стандартному уведомлению
+  // При ошибке сервер возвращает json вида
+  // {"email":["Имеет неверное значение"],"last_name":["Не может быть пустым"]}
+
+  parseResponseErrors: function(defaultMessage, response){
+
+    try{
+
+      if(!defaultMessage || defaultMessage.length <= 0){
+        defaultMessage = 'Неизвестная ошибка'
+      }
+
+      var responseMessages = '';
+      var responseErrors = JSON.parse(response.responseText);
+      _.each(responseErrors, function(errors, field){
+        responseMessages = responseMessages + field + ': ' + errors.join(', ') + '<br>';
+      });
+      if(responseMessages.length){
+        defaultMessage = defaultMessage + '<br><br>' + responseMessages;
+      }
+
+    } catch(err){}
+
+    return defaultMessage;
+
+  },
+
+  // Промежуточная функция для показа любых growl сообщений
+  growlMessage: function(options){
+
+    var status = options.status || 'error';
+    switch (status) {
+      case 'error': case 'warning':
+        var className = options.className || 'alert alert-error';
+        var defaultTitle = 'Ошибка!';
+        var defaultText = 'Что-то пошло не так. Попробуйте ещё раз';
+        break
+      case 'success': case 'ok':
+        var className = options.className || 'alert alert-success';
+        var defaultTitle = 'Всё отлично!';
+        var defaultText = 'Операция успешно выполнена';
+        break
+      case 'info':
+        var className = options.className || 'alert alert-info';
+        var defaultTitle = '';
+        var defaultText = '';
+        break
+      default:
+        var className = options.className || 'alert alert-error';
+        var defaultTitle = '';
+        var defaultText = '';
+    }
+
+    var title = options.title || defaultTitle;
+    var text = options.text || defaultText;
+    var timeout = options.timeout || 3000;
+    var maxMessages = 4;
+
+    var options = {
+      title: title,
+      content: text,
+      onclick: function () {},
+      timeout: timeout,
+      autoclose: true,
+      icon: ''
+    };
+
+    $.jGrowl(text, {
+      header: title,
+      life: timeout,
+      glue: 'after',
+      beforeOpen: function(){
+        if($('#jGrowl .jGrowl-notification').length-1 >= maxMessages){
+          $('#jGrowl .jGrowl-notification:nth-child(2)').remove();
+        }
+      },
+      theme: className,
+      closer: false
+    });
+
+  },
+
+  // кастомизация скроллов
+  // у блока со скроллингом должны стоять классы
+  // .js-scrollpane (+.js-scrollpane_left - скроллбар слева) (+.js-scrollpane_with-shadow - тень сверху и снизу)
+  setCustomScrolls: function(options){
+
+    var gap = (options && options.gap)? options.gap : -12;
+    var autoReinitialiseDelay = (options && options.autoReinitialiseDelay >= 0)? options.autoReinitialiseDelay : 1000;
+
+    if(autoReinitialiseDelay <= 0){
+      var autoReinitialise = false;
+    } else {
+      var autoReinitialise = true;
+    }
+
+    $('.js-scrollpane')
+      .bind('jsp-initialised', function(event, isScrollable){
+        if(isScrollable && $(this).hasClass('js-scrollpane_with-shadow')){
+          this.showShadow = true;
+
+          var container = $(this).find('.jspContainer');
+          this.topShadow = container.find('.b-scroll-shadow_top');
+          if(this.topShadow.length <= 0){
+            this.topShadow = $('<div class="b-scroll-shadow b-scroll-shadow_top"></div>').prependTo(container);
+          }
+          this.bottomShadow = container.find('.b-scroll-shadow_bottom');
+          if(this.bottomShadow.length <= 0){
+            this.bottomShadow = $('<div class="b-scroll-shadow b-scroll-shadow_bottom"></div>').appendTo(container);
+          }
+
+        }
+      })
+      .bind('jsp-scroll-y', function(event, scrollPositionY, isAtTop, isAtBottom){
+
+        if(this.showShadow){
+          if(isAtTop){
+            this.topShadow.hide();
+          } else {
+            this.topShadow.show();
+          }
+          if(isAtBottom){
+            this.bottomShadow.hide();
+          } else {
+            this.bottomShadow.show();
+          }
+
+        }
+      }).jScrollPane({
+        verticalGutter: gap,
+        autoReinitialise: autoReinitialise,
+        autoReinitialiseDelay: autoReinitialiseDelay
+      });
+
+    // ловим ресайз окна
+    $('.js-scrollpane').each(function(){
+      var api = $(this).data('jsp'), throttleTimeout;
+      if(api){
+        $(window).bind('resize', function(){
+          if ($.browser.msie) {
+            // todo $.browser is deprecated
+            // IE fires multiple resize events while you are dragging the browser window which
+            // causes it to crash if you try to update the scrollpane on every one. So we need
+            // to throttle it to fire a maximum of once every 50 milliseconds...
+            if (!throttleTimeout) {
+              throttleTimeout = setTimeout(function(){
+                api.reinitialise();
+                throttleTimeout = null;
+              }, 50);
+            }
+          } else {
+            api.reinitialise();
+          }
+        });
+      }
+    });
+
+    // Скрываем тенюшки, если вызывается поиск по странице, так как тень глючит
+    $(window).keydown(function(e){
+      if ((e.ctrlKey || e.metaKey) && e.keyCode === 70) {
+        $('.b-scroll-shadow').hide();
+      }
+    });
+
+  },
+
+  // временный хелпер для приведения дат из разных форматов к одному виду
+  // бывает unix timestamp, sql-string
+  // после хелпера обрабатываем дату уже обычным способом с использованием moment.js
+  prepareDate: function(date){
+
+    if(date){
+
+      if(date.toString().indexOf('-') == -1){
+        // unix timestamp
+        return parseInt(date)*1000;
+      } else if (date.toString().indexOf('T') == -1) {
+        //2013-05-15 12:37:22
+        new_date = date.replace(/^(\d\d\d\d-\d\d-\d\d)\s(\d\d?:\d\d?:\d\d?)(.+)?$/, "$1T$2$3+00:00");
+        // console.info(new_date)
+        return(new_date)
+      } else {
+        // 2013-05-15T12:37:22+04:00
+        return date;
+      }
+    } else {
+      return null;
+    }
+  },
+
+  // перестраивает навигацию в зависимости от ширины браузера
+  rebuildNavigation: function(){
+
+    var logo = $('#navbar .brand');
+    var editor = $('#navbar .b-current-editor');
+    var mainItems = $('#navbar .nav > li:not(.additional)');
+
+    var additionalItems = $('#navbar .nav > li.additional');
+    additionalItems.find('.icon-white').css('display','inline-block').end().find('span').show();
+
+    var navWidth = $('#navbar').innerWidth();
+
+    var logoWidth = logo.outerWidth();
+    var logoMargin = parseInt(logo.css('margin-left'));
+
+    var editorWidth = editor.outerWidth()+parseInt(editor.css('margin-right'));
+    var mainItemsWidth = 0;
+    mainItems.each(function(){
+      mainItemsWidth += $(this).width();
+    });
+    var additionalItemsWidth = 0;
+    additionalItems.each(function(){
+      additionalItemsWidth += $(this).width();
+    });
+    var itemsMargin = parseInt($('#navbar .nav').css('margin-left'))
+
+    if(logoWidth + logoMargin + mainItemsWidth + additionalItemsWidth + itemsMargin + editorWidth >= navWidth - 10){
+      logo.hide();
+      $('#navbar .nav').css('margin-left',logoMargin+10+'px');
+    } else {
+      logo.show();
+      $('#navbar .nav').css('margin-left','0px');
+    }
+
+    if(mainItemsWidth + additionalItemsWidth + itemsMargin + editorWidth >= navWidth - 20){
+      additionalItems.find('a .icon-white').css('display','inline-block').end().find('a span').hide();
+    } else {
+      additionalItems.find('a .icon-white').hide().end().find('a span').show();
+    }
+
+  }
+
+};
+
+$($.proxy(Workspace.initialize, Workspace));
+
+if ( 'rivets' in window ) {
+  // Новый биндинг Rivets.js
+  rivets.configure({
+    adapter: {
+      subscribe: function(obj, keypath, callback) {
+        obj.on('change:' + keypath, callback);
+      },
+      unsubscribe: function(obj, keypath, callback) {
+        obj.off('change:' + keypath, callback);
+      },
+      read: function(obj, keypath) {
+        return obj.get(keypath);
+      },
+      publish: function(obj, keypath, value) {
+        obj.set(keypath, value);
+      }
+    }
+  });
+}
+
+Backbone.Marionette.Renderer.render = function(template, data){
+  if (!JST[template]) throw "Template ['" + template + "'] not found!";
+  return JST[template](data);
+}
+
+

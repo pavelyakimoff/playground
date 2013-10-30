@@ -1,0 +1,41 @@
+.b-form__wrap
+  %h3.b-form__title
+    %span.b-form__title__inner {?isNew} Новый разработчик {:else} Редактирование карточки разработчика {/isNew}
+
+  .control-group
+    %label.control-label{:for => "name"} Имя
+    .controls
+      %input.span4{:type => "text", :name => "name"}
+
+  .control-group
+    %label.control-label{:for => "surname"} Фамилия
+    .controls
+      %input.span4{:type => "text", :name => "surname"}
+      
+  .control-group
+    %label.control-label{:for => "phone"} Телефон
+    .controls
+      %input.span4{:type => "text", :name => "phone"}
+      
+  .control-group
+    %label.control-label{:for => "level"} Level
+    .controls
+      %input.span4{:type => "text", :name => "level"}
+
+  .form-actions
+    {?isNew}
+    %button.btn.btn-success.b-form__save
+      %i.icon-ok.icon-white
+      &nbsp;
+      %span Занести данные в базу
+    %button.btn.b-form__clear{:type => "reset", :title => "Очистить"} Очистить
+    {:else}
+    %button.btn.btn-success.b-form__save
+      %i.icon-ok.icon-white
+      &nbsp;
+      %span Сохранить изменения
+    %button.btn.btn-danger.b-form__delete
+      %i.icon-remove.icon-white
+      &nbsp;
+      %span Удалить разработчика
+    {/isNew}
