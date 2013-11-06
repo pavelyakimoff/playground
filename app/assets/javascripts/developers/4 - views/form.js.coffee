@@ -38,6 +38,7 @@ class Playground.Views.DeveloperForm extends Backbone.Marionette.ItemView
         # Playground.App.collection.fetch() 
         @closePopup()
       if @model.isNew()
+        console.log @model
         Playground.App.collection.push(@model) 
         Playground.App.collection.sort()
     else
