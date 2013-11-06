@@ -24,5 +24,5 @@ class Playground.Views.Developers extends Backbone.Marionette.CompositeView
     $('#forms').html(form.render().el)
     
   renderCollection: ->
-    this.render()
+    @render()
 

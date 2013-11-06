@@ -15,9 +15,12 @@ class Playground.Views.Developer extends Backbone.Marionette.ItemView
   # event-functions
   deleteDeveloper: ->
     console.log 'deleteDeveloper'
-    @$el.find('td').fadeOut 500, (item) => 
-      @close()
-      @model.destroy()
+    if @model.get('name').toLowerCase() != 'chuck' and @model.get('surname').toLowerCase() != 'norris'
+      @$el.find('td').fadeOut 500, (item) => 
+        @close()
+        @model.destroy()
+    else
+      alert 'Чак уже у тебя за спиной и сейчас удалит тебя...'
       
   editDeveloper: ->
     console.log 'editDeveloper'
