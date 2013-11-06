@@ -35,7 +35,6 @@ class Playground.Views.DeveloperForm extends Backbone.Marionette.ItemView
       console.log 'model is valid!'
       console.log @model.isNew()
       @model.save({wait: true}).done =>
-        # Playground.App.collection.fetch() 
         @closePopup()
       if @model.isNew()
         console.log @model

@@ -10,25 +10,25 @@ class Playground.Views.Developer extends Backbone.Marionette.ItemView
     'click .level .up': 'levelUp'
   
   initialize: ->
-    this.listenTo @model, 'sync', this.render
+    @listenTo @model, 'sync', @render
     
   # event-functions
   deleteDeveloper: ->
     console.log 'deleteDeveloper'
-    this.$el.find('td').fadeOut 500, (item) => 
-      this.close()
-      this.model.destroy()
+    @$el.find('td').fadeOut 500, (item) => 
+      @close()
+      @model.destroy()
       
   editDeveloper: ->
     console.log 'editDeveloper'
     console.log @
-    @model.view = new Playground.Views.DeveloperForm
-      model: this.model
+    view = new Playground.Views.DeveloperForm
+      model: @model
     
-    $('#forms').html(@model.view.render().el)
+    $('#forms').html(view.render().el)
     
   serializeData: ->
-    this.model.toJSON()
+    @model.toJSON()
     
   sure: (ev) ->
     ev.preventDefault()
